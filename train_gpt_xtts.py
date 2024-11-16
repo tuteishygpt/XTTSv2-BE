@@ -125,8 +125,8 @@ def train_gpt(metadatas, num_epochs, batch_size, grad_acumm, output_path, max_au
 
     # init args and config
     model_args = GPTArgs(
-        max_conditioning_length=132300,  # 6 secs
-        min_conditioning_length=11025,  # 0.5 secs
+        max_conditioning_length=264600,  # 12 secs
+        min_conditioning_length=88200,  # 4 secs
         debug_loading_failures=False,
         max_wav_length=max_audio_length,  # ~11.6 seconds
         max_text_length=max_text_length,
