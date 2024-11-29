@@ -197,7 +197,8 @@ def train_gpt(metadatas, num_epochs, batch_size, grad_acumm, output_path, max_au
             grad_accum_steps=GRAD_ACUMM_STEPS
         ),
         config,
-        output_path=os.path.join(output_path, "run", "training"),
+        #output_path=os.path.join(output_path, "run", "training"),
+        output_path=os.path.join(output_path),
         model=model,
         train_samples=train_samples,
         eval_samples=eval_samples,
