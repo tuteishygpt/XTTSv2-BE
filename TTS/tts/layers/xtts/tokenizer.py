@@ -229,6 +229,12 @@ _abbreviations = {
             # Korean doesn't typically use abbreviations in the same way as Latin-based scripts.
         ]
     ],
+    "be": [
+        (re.compile("\\b%s\\." % x[0], re.IGNORECASE), x[1])
+        for x in [
+            
+        ]
+    ],
 }
 
 
@@ -375,6 +381,19 @@ _symbols_multilingual = {
             ("°", " градус "),
         ]
     ],
+    "be": [
+        # Belarusian
+        (re.compile(r"%s" % re.escape(x[0]), re.IGNORECASE), x[1])
+        for x in [
+            ("&", " і "),
+            ("@", " смоўж "),
+            ("%", " адсотак "),
+            ("#", " нумар "),
+            ("$", " даляр "),
+            ("£", " фунт "),
+            ("°", " градус "),
+        ]
+    ],
     "nl": [
         # Dutch
         (re.compile(r"%s" % re.escape(x[0]), re.IGNORECASE), x[1])
@@ -450,6 +469,7 @@ _ordinal_re = {
     "tr": re.compile(r"([0-9]+)(\.|inci|nci|uncu|üncü|\.)"),
     "hu": re.compile(r"([0-9]+)(\.|adik|edik|odik|edik|ödik|ödike|ik)"),
     "ko": re.compile(r"([0-9]+)(번째|번|차|째)"),
+    "be": re.compile(r"([0-9]+)(ы|ыя|і|ая|яя|ае|ое|яе|ія)"),
 }
 _number_re = re.compile(r"[0-9]+")
 _currency_re = {
@@ -617,6 +637,7 @@ class VoiceBpeTokenizer:
             "ja": 71,
             "hu": 224,
             "ko": 95,
+            "be": 250,
         }
 
     @cached_property
@@ -634,7 +655,7 @@ class VoiceBpeTokenizer:
             )
 
     def preprocess_text(self, txt, lang):
-        if lang in {"ar", "cs", "de", "en", "es", "fr", "hu", "it", "nl", "pl", "pt", "ru", "tr", "zh", "ko"}:
+        if lang in {"ar", "be", "cs", "de", "en", "es", "fr", "hu", "it", "nl", "pl", "pt", "ru", "tr", "zh", "ko"}:
             txt = multilingual_cleaners(txt, lang)
             if lang == "zh":
                 txt = chinese_transliterate(txt)
