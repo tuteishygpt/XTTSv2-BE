@@ -40,6 +40,8 @@ def create_xtts_trainer_parser():
                         help="Save step")
     parser.add_argument("--tf32_matmul", type=bool, default=False,
                         help="Enable or disable Torch TF32 MatMul")
+    parser.add_argument("--tf32_cudnn", type=bool, default=False,
+                        help="Enable or disable Torch TF32 CUDNN")
 
     return parser
 
@@ -235,8 +237,9 @@ if __name__ == "__main__":
     parser = create_xtts_trainer_parser()
     args = parser.parse_args()
 
-    # Set Torch TF32 MatMul based on the command line argument
+    # Set Torch TF32 MatMul and CUDNN based on the command line arguments
     torch.backends.cuda.matmul.allow_tf32 = args.tf32_matmul
+    torch.backends.cudnn.allow_tf32 = args.tf32_cudnn
 
     trainer_out_path = train_gpt(
         metadatas=args.metadatas,
