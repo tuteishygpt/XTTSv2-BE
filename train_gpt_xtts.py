@@ -14,6 +14,7 @@ from transformers import HfArgumentParser
 
 import argparse
 
+
 def create_xtts_trainer_parser():
     parser = argparse.ArgumentParser(description="Arguments for XTTS Trainer")
 
@@ -37,9 +38,10 @@ def create_xtts_trainer_parser():
                         help="Learning rate")
     parser.add_argument("--save_step", type=int, default=5000,
                         help="Save step")
+    parser.add_argument("--tf32_matmul", type=bool, default=False,
+                        help="Enable or disable Torch TF32 MatMul")
 
     return parser
-
 
 
 def train_gpt(metadatas, num_epochs, batch_size, grad_acumm, output_path, max_audio_length, max_text_length, lr, weight_decay, save_step):
@@ -54,11 +56,11 @@ def train_gpt(metadatas, num_epochs, batch_size, grad_acumm, output_path, max_au
     OUT_PATH = output_path
 
     # Training Parameters
-    OPTIMIZER_WD_ONLY_ON_WEIGHTS = True  # for multi-gpu training please make it False
+    # for multi-gpu training please make it False
+    OPTIMIZER_WD_ONLY_ON_WEIGHTS = True
     START_WITH_EVAL = False  # if True it will star with evaluation
     BATCH_SIZE = batch_size  # set here the batch size
     GRAD_ACUMM_STEPS = grad_acumm  # set here the grad accumulation steps
-
 
     # Define here the dataset that you want to use for the fine-tuning on.
     DATASETS_CONFIG_LIST = []
@@ -78,7 +80,8 @@ def train_gpt(metadatas, num_epochs, batch_size, grad_acumm, output_path, max_au
         DATASETS_CONFIG_LIST.append(config_dataset)
 
     # Define the path where XTTS v2.0.1 files will be downloaded
-    CHECKPOINTS_OUT_PATH = os.path.join(OUT_PATH, "XTTS_v2.0_original_model_files/")
+    CHECKPOINTS_OUT_PATH = os.path.join(
+        OUT_PATH, "XTTS_v2.0_original_model_files/")
     os.makedirs(CHECKPOINTS_OUT_PATH, exist_ok=True)
 
     # DVAE files
@@ -86,14 +89,16 @@ def train_gpt(metadatas, num_epochs, batch_size, grad_acumm, output_path, max_au
     MEL_NORM_LINK = "https://coqui.gateway.scarf.sh/hf-coqui/XTTS-v2/main/mel_stats.pth"
 
     # Set the path to the downloaded files
-    DVAE_CHECKPOINT = os.path.join(CHECKPOINTS_OUT_PATH, os.path.basename(DVAE_CHECKPOINT_LINK))
-    MEL_NORM_FILE = os.path.join(CHECKPOINTS_OUT_PATH, os.path.basename(MEL_NORM_LINK))
+    DVAE_CHECKPOINT = os.path.join(
+        CHECKPOINTS_OUT_PATH, os.path.basename(DVAE_CHECKPOINT_LINK))
+    MEL_NORM_FILE = os.path.join(
+        CHECKPOINTS_OUT_PATH, os.path.basename(MEL_NORM_LINK))
 
     # download DVAE files if needed
     if not os.path.isfile(DVAE_CHECKPOINT) or not os.path.isfile(MEL_NORM_FILE):
         print(" > Downloading DVAE files!")
-        ModelManager._download_model_files([MEL_NORM_LINK, DVAE_CHECKPOINT_LINK], CHECKPOINTS_OUT_PATH, progress_bar=True)
-
+        ModelManager._download_model_files(
+            [MEL_NORM_LINK, DVAE_CHECKPOINT_LINK], CHECKPOINTS_OUT_PATH, progress_bar=True)
 
     # Download XTTS v2.0 checkpoint if needed
     TOKENIZER_FILE_LINK = "https://coqui.gateway.scarf.sh/hf-coqui/XTTS-v2/main/vocab.json"
@@ -101,9 +106,13 @@ def train_gpt(metadatas, num_epochs, batch_size, grad_acumm, output_path, max_au
     XTTS_CONFIG_LINK = "https://coqui.gateway.scarf.sh/hf-coqui/XTTS-v2/main/config.json"
 
     # XTTS transfer learning parameters: You we need to provide the paths of XTTS model checkpoint that you want to do the fine tuning.
-    TOKENIZER_FILE = os.path.join(CHECKPOINTS_OUT_PATH, os.path.basename(TOKENIZER_FILE_LINK))  # vocab.json file
-    XTTS_CHECKPOINT = os.path.join(CHECKPOINTS_OUT_PATH, os.path.basename(XTTS_CHECKPOINT_LINK))  # model.pth file
-    XTTS_CONFIG_FILE = os.path.join(CHECKPOINTS_OUT_PATH, os.path.basename(XTTS_CONFIG_LINK))  # config.json file
+    TOKENIZER_FILE = os.path.join(CHECKPOINTS_OUT_PATH, os.path.basename(
+        TOKENIZER_FILE_LINK))  # vocab.json file
+    XTTS_CHECKPOINT = os.path.join(CHECKPOINTS_OUT_PATH, os.path.basename(
+        XTTS_CHECKPOINT_LINK))  # model.pth file
+    XTTS_CONFIG_FILE = os.path.join(
+        # config.json file
+        CHECKPOINTS_OUT_PATH, os.path.basename(XTTS_CONFIG_LINK))
 
     # download XTTS v2.0 files if needed
     if not os.path.isfile(TOKENIZER_FILE):
@@ -131,7 +140,8 @@ def train_gpt(metadatas, num_epochs, batch_size, grad_acumm, output_path, max_au
         max_text_length=max_text_length,
         mel_norm_file=MEL_NORM_FILE,
         dvae_checkpoint=DVAE_CHECKPOINT,
-        xtts_checkpoint=XTTS_CHECKPOINT,  # checkpoint path of the model that you want to fine-tune
+        # checkpoint path of the model that you want to fine-tune
+        xtts_checkpoint=XTTS_CHECKPOINT,
         tokenizer_file=TOKENIZER_FILE,
         gpt_num_audio_tokens=1026,
         gpt_start_audio_token=1024,
@@ -140,7 +150,8 @@ def train_gpt(metadatas, num_epochs, batch_size, grad_acumm, output_path, max_au
         gpt_use_perceiver_resampler=True,
     )
     # define audio config
-    audio_config = XttsAudioConfig(sample_rate=22050, dvae_sample_rate=22050, output_sample_rate=24000)
+    audio_config = XttsAudioConfig(
+        sample_rate=22050, dvae_sample_rate=22050, output_sample_rate=24000)
     # training parameters config
 
     config = GPTTrainerConfig()
@@ -170,7 +181,8 @@ def train_gpt(metadatas, num_epochs, batch_size, grad_acumm, output_path, max_au
     config.print_eval = False
     config.optimizer = "AdamW"
     config.optimizer_wd_only_on_weights = OPTIMIZER_WD_ONLY_ON_WEIGHTS
-    config.optimizer_params = {"betas": [0.9, 0.96], "eps": 1e-8, "weight_decay": weight_decay}
+    config.optimizer_params = {
+        "betas": [0.9, 0.96], "eps": 1e-8, "weight_decay": weight_decay}
     config.lr = lr
     config.lr_scheduler = "MultiStepLR"
     config.lr_scheduler_params = {"milestones": [
@@ -197,7 +209,7 @@ def train_gpt(metadatas, num_epochs, batch_size, grad_acumm, output_path, max_au
             grad_accum_steps=GRAD_ACUMM_STEPS
         ),
         config,
-        #output_path=os.path.join(output_path, "run", "training"),
+        # output_path=os.path.join(output_path, "run", "training"),
         output_path=os.path.join(output_path),
         model=model,
         train_samples=train_samples,
@@ -207,7 +219,7 @@ def train_gpt(metadatas, num_epochs, batch_size, grad_acumm, output_path, max_au
 
     # get the longest text audio file to use as speaker reference
     samples_len = [len(item["text"].split(" ")) for item in train_samples]
-    longest_text_idx =  samples_len.index(max(samples_len))
+    longest_text_idx = samples_len.index(max(samples_len))
     speaker_ref = train_samples[longest_text_idx]["audio_file"]
 
     trainer_out_path = trainer.output_path
@@ -218,9 +230,13 @@ def train_gpt(metadatas, num_epochs, batch_size, grad_acumm, output_path, max_au
 
     return trainer_out_path
 
+
 if __name__ == "__main__":
     parser = create_xtts_trainer_parser()
     args = parser.parse_args()
+
+    # Set Torch TF32 MatMul based on the command line argument
+    torch.backends.cuda.matmul.allow_tf32 = args.tf32_matmul
 
     trainer_out_path = train_gpt(
         metadatas=args.metadatas,
