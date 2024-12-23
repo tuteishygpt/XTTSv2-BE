@@ -1,5 +1,6 @@
 import os
 import gc
+import torch
 
 from trainer import Trainer, TrainerArgs
 
