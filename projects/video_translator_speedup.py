@@ -7,6 +7,7 @@ from underthesea import sent_tokenize
 import json
 import sys
 import os
+from pydub import AudioSegment
 
 sys.path.append('/content/XTTSv2-Finetuning-for-New-Languages')
 
