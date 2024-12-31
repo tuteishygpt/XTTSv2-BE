@@ -3,8 +3,8 @@ import torchaudio
 from tqdm import tqdm
 from underthesea import sent_tokenize
 
-import os
-os.chdir("/content/XTTSv2-Finetuning-for-New-Languages")
+import sys
+sys.path.append('/content/XTTSv2-Finetuning-for-New-Languages')
 
 from TTS.tts.configs.xtts_config import XttsConfig
 from TTS.tts.models.xtts import Xtts
