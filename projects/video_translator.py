@@ -89,7 +89,7 @@ for i, segment in enumerate(tqdm(segments, desc="Generating TTS")):
 
         # Get current duration in seconds
         current_duration = len(
-            wav_chunk["wav"]) / XTTS_MODEL.config.sample_rate
+            wav_chunk["wav"]) / XTTS_MODEL.config.audio.sample_rate
 
         # Calculate speed ratio needed
         speed_ratio = current_duration / target_duration
