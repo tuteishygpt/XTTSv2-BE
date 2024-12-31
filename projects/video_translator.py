@@ -108,8 +108,7 @@ for file_path in output_files:
     if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
         combined_audio += AudioSegment.from_file(file_path)
     else:
-        print(f"[WARNING] File {
-              file_path} is corrupted or empty and will be skipped.")
+        print(f"[WARNING] File {file_path} is corrupted or empty and will be skipped.")
 
 # Export final audio
 final_output_path = os.path.join(output_dir, "final_tts_output.wav")
