@@ -4,6 +4,8 @@ from tqdm import tqdm
 from underthesea import sent_tokenize
 
 import sys
+import os
+
 sys.path.append('/content/XTTSv2-Finetuning-for-New-Languages')
 
 from TTS.tts.configs.xtts_config import XttsConfig
