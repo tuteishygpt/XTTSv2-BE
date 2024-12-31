@@ -2,7 +2,7 @@ import torch
 import torchaudio
 from tqdm import tqdm
 from underthesea import sent_tokenize
-
+import json
 import sys
 import os
 
@@ -40,6 +40,15 @@ XTTS_MODEL.to(device)
 output_dir = "/content/out"
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
+
+# Load segments from JSON file
+files_json_path = '/content/downloads/audio_chunks/filenames.json'
+
+with open(files_json_path, 'r', encoding='utf-8') as f:
+    segments = json.load(f)
+
+# Extract filenames for reference audio
+filenames = segments
 
 output_files = []
 
