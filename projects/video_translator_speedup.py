@@ -1,5 +1,3 @@
-from TTS.tts.models.xtts import Xtts
-from TTS.tts.configs.xtts_config import XttsConfig
 import torch
 import torchaudio
 from tqdm import tqdm
@@ -11,6 +9,8 @@ from pydub import AudioSegment
 
 sys.path.append('/content/XTTSv2-Finetuning-for-New-Languages')
 
+from TTS.tts.configs.xtts_config import XttsConfig
+from TTS.tts.models.xtts import Xtts
 
 # -----------------------------------------------
 # 7. Generate TTS translation
