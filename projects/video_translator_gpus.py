@@ -150,7 +150,7 @@ for i, file_path in enumerate(output_files):
     if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
         # Get timing from original segment
         # Convert to ms
-        segment_start = aligned_segments["segments"][i]["start"] * 1000
+        segment_start = aligned_segments[i]["start"] * 1000
 
         # Add silence if needed before speech
         if segment_start > current_position:
@@ -163,7 +163,7 @@ for i, file_path in enumerate(output_files):
         combined_audio += speech_segment
 
         # Update position to end of current segment
-        current_position = aligned_segments["segments"][i]["end"] * 1000
+        current_position = aligned_segments[i]["end"] * 1000
     else:
         print(f"[WARNING] File {file_path} is corrupted or empty and will be skipped.")
 
