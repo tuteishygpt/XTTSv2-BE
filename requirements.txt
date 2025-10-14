@@ -1,34 +1,35 @@
 # core deps
-numpy
-cython
-scipy
-torch
-torchaudio
-soundfile
-librosa
-scikit-learn
-numba
+numpy>=1.26.0
+cython>=3.0.4
+scipy>=1.12.0
+torch>=2.2.0
+torchaudio>=2.2.0
+soundfile>=0.12.1
+librosa>=0.10.1
+scikit-learn>=1.4.0
+numba>=0.60.0
 inflect
-tqdm
-anyascii
-pyyaml
-fsspec
-aiohttp
-packaging
+tqdm>=4.66.1
+anyascii>=0.3.2
+pyyaml>=6.0.1
+fsspec>=2023.12.0
+aiohttp>=3.9.1
+packaging>=23.2
 mutagen
 # deps for examples
-flask
+flask>=2.3.3
 # deps for inference
 pysbd
 # deps for notebooks
-umap-learn
-pandas
+umap-learn>=0.5.5
+pandas>=2.2.0
 # deps for training
-matplotlib
+matplotlib>=3.8.0
 # coqui stack
-trainer
+coqui-tts-trainer
 # config management
-coqpit
+coqpit-config
+blinker==1.7.0
 # chinese g2p deps
 jieba
 pypinyin
@@ -45,14 +46,14 @@ bangla
 bnnumerizer
 bnunicodenormalizer
 #deps for tortoise
-einops
-transformers
+einops>=0.7.0
+transformers>=4.38.0
 #deps for bark
-encodec
+encodec>=0.1.1
 # deps for XTTS
-unidecode
-num2words
-spacy[ja]
-tokenizers
+unidecode>=1.3.7
+num2words>=0.5.13
+spacy[ja]>=3.7.2
+tokenizers>=0.15.2
 vinorm
 underthesea
