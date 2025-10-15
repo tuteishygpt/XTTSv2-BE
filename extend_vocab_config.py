@@ -40,6 +40,8 @@ def combine_tokenizers(old_tokenizer, new_tokenizer, save_dir):
 
 
 def extend_tokenizer(args):
+    # ADDED: force language code to lowercase
+    args.language = args.language.lower()
     
     root = os.path.join(args.output_path, "XTTS_v2.0_original_model_files/")
 
@@ -52,6 +54,8 @@ def extend_tokenizer(args):
     # train new tokenizer
     traindf = pd.read_csv(args.metadata_path, sep="|")
     texts = traindf.text.to_list()
+    # ADDED: lowercase all training texts to ensure new vocab is lowercase
+    texts = [str(t).lower() for t in texts]
 
     new_tokenizer = Tokenizer(BPE())
     new_tokenizer.pre_tokenizer = Whitespace()
@@ -76,6 +80,21 @@ def extend_tokenizer(args):
     tokenizer.add_special_tokens([f"[{args.language}]"])
 
     tokenizer.save(os.path.join(root, "vocab.json"))
+
+    # ADDED: ensure the language special token is lowercase in final vocab.json (in case it was added uppercase elsewhere)
+    try:
+        vocab_path = os.path.join(root, "vocab.json")
+        with open(vocab_path, "r", encoding="utf-8") as f:
+            vocab = json.load(f)
+        upper_tok = f"[{args.language.upper()}]"
+        lower_tok = f"[{args.language}]"
+        if upper_tok in vocab and lower_tok not in vocab:
+            vocab[lower_tok] = vocab.pop(upper_tok)
+            with open(vocab_path, "w", encoding="utf-8") as f:
+                json.dump(vocab, f, ensure_ascii=False)
+    except Exception:
+        # fail-safe: do nothing if vocab format is unexpected
+        pass
 
     os.system(f'rm -rf {old_tokenizer_path} {new_tokenizer_path} {merged_tokenizer_path}')
 
