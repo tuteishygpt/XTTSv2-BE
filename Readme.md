@@ -162,7 +162,7 @@ print("Model loaded successfully!")
 # Inference
 tts_text = "Good to see you."
 speaker_audio_file = "ref.wav"
-lang = "vi"
+lang = "be"
 
 gpt_cond_latent, speaker_embedding = XTTS_MODEL.get_conditioning_latents(
     audio_path=speaker_audio_file,
